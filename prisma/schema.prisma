@@ -1,0 +1,152 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Patient {
+  id              Int               @id @default(autoincrement())
+  name            String
+  cpf             String
+  email           String            @unique
+  password        String
+  birthDate       DateTime?
+  profilePicture  String?
+  height          Decimal?
+  weight          Decimal?
+  gender          String?
+  createdAt       DateTime?         @default(now())
+  updatedAt       DateTime?         @updatedAt
+  PatientAllergy  PatientAllergy[]
+  PatientMedicine PatientMedicine[]
+  Condition       Condition[]
+  Rating          Rating[]
+  Appointment     Appointment[]
+}
+
+model Allergy {
+  id             Int              @id @default(autoincrement())
+  name           String
+  PatientAllergy PatientAllergy[]
+}
+
+model PatientAllergy {
+  patient   Patient  @relation(fields: [patientId], references: [id])
+  patientId Int
+  allergy   Allergy  @relation(fields: [allergyId], references: [id])
+  allergyId Int
+  symptons  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@id([patientId, allergyId])
+}
+
+model Medicine {
+  id              Int               @id @default(autoincrement())
+  name            String
+  PatientMedicine PatientMedicine[]
+}
+
+model PatientMedicine {
+  id         Int       @id @default(autoincrement())
+  patient    Patient   @relation(fields: [patientId], references: [id])
+  patientId  Int
+  medicine   Medicine  @relation(fields: [medicineId], references: [id])
+  medicineId Int
+  frequency  String
+  isActive   Boolean   @default(false)
+  startedAt  DateTime?
+  stoppedAt  DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+}
+
+model Condition {
+  id          Int     @id @default(autoincrement())
+  name        String
+  description String
+  patient     Patient @relation(fields: [patientId], references: [id])
+  patientId   Int
+}
+
+model Doctor {
+  id             Int           @id @default(autoincrement())
+  name           String
+  email          String        @unique
+  password       String
+  profilePicture String
+  specialty      Specialty     @relation(fields: [specialtyId], references: [id])
+  specialtyId    Int
+  description    String
+  insurance      Insurance
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  Appointment    Appointment[]
+  Rating         Rating[]
+}
+
+enum Insurance {
+  UNIMED
+  HAPVIDA
+  BRADESCO
+}
+
+model Specialty {
+  id     Int      @id @default(autoincrement())
+  name   String
+  Doctor Doctor[]
+}
+
+model Rating {
+  id        Int      @id @default(autoincrement())
+  patient   Patient  @relation(fields: [patientId], references: [id])
+  patientId Int
+  doctor    Doctor   @relation(fields: [doctorId], references: [id])
+  doctorId  Int
+  rating    Int
+  createdAt DateTime @default(now())
+
+  @@unique([patientId, doctorId])
+}
+
+model Appointment {
+  id        Int       @id @default(autoincrement())
+  patient   Patient   @relation(fields: [patientId], references: [id])
+  patientId Int
+  doctor    Doctor    @relation(fields: [doctorId], references: [id])
+  doctorId  Int
+  date      DateTime  @db.Date
+  time      TimeSlots
+  location  String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  Exam      Exam[]
+}
+
+model Exam {
+  id            Int         @id @default(autoincrement())
+  appointment   Appointment @relation(fields: [appointmentId], references: [id])
+  appointmentId Int
+  examType      String
+  result        String
+  location      String
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}
+
+enum TimeSlots {
+  A //  9 - 10
+  B // 10 - 11
+  C // 13 - 14
+  D // 14 - 15
+  E // 15 - 16
+  F // 16 - 17
+  G // 17 - 18
+}
