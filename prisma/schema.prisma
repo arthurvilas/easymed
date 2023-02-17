@@ -69,11 +69,13 @@ model PatientMedicine {
 }
 
 model Condition {
-  id          Int     @id @default(autoincrement())
-  name        String
-  description String
-  patient     Patient @relation(fields: [patientId], references: [id])
-  patientId   Int
+  id            Int         @id @default(autoincrement())
+  patient       Patient     @relation(fields: [patientId], references: [id])
+  patientId     Int
+  appointment   Appointment @relation(fields: [appointmentId], references: [id])
+  appointmentId Int
+  name          String
+  description   String
 }
 
 model Doctor {
@@ -117,17 +119,18 @@ model Rating {
 }
 
 model Appointment {
-  id        Int       @id @default(autoincrement())
-  patient   Patient   @relation(fields: [patientId], references: [id])
+  id        Int         @id @default(autoincrement())
+  patient   Patient     @relation(fields: [patientId], references: [id])
   patientId Int
-  doctor    Doctor    @relation(fields: [doctorId], references: [id])
+  doctor    Doctor      @relation(fields: [doctorId], references: [id])
   doctorId  Int
-  date      DateTime  @db.Date
+  date      DateTime    @db.Date
   time      TimeSlots
   location  String
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
   Exam      Exam[]
+  Condition Condition[]
 }
 
 model Exam {
