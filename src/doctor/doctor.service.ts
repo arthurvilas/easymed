@@ -1,4 +1,5 @@
 import { Prisma } from '@prisma/client';
+import { hash } from 'bcrypt';
 import { db } from '../utils/db.server';
 
 export const listDoctors = async (specialty?: number) => {
@@ -13,6 +14,7 @@ export const getDoctor = async (id: number) => {
 };
 
 export const createDoctor = async (doctorData: Prisma.DoctorCreateInput) => {
+  doctorData.password = await hash(doctorData.password, 8);
   return db.doctor.create({
     data: doctorData,
   });
