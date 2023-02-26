@@ -1,11 +1,15 @@
 import { RequestHandler } from 'express';
+import { exclude } from '../utils/excludeFields';
 import * as PatientService from './patient.service';
 
 // List all patients
 export const listPatients: RequestHandler = async (req, res) => {
   try {
     const patients = await PatientService.listPatients();
-    return res.status(200).json(patients);
+    const patientsWithoutPassword = patients.map((patient) =>
+      exclude(patient, ['password'])
+    );
+    return res.status(200).json(patientsWithoutPassword);
   } catch (error: any) {
     return res.status(500).json(error.message);
   }
@@ -19,7 +23,7 @@ export const getPatient: RequestHandler = async (req, res) => {
     if (!patient) {
       return res.status(404).json(`No Patient with id ${id}`);
     }
-    return res.status(200).json(patient);
+    return res.status(200).json(exclude(patient, ['password']));
   } catch (error: any) {
     return res.status(500).json(error.message);
   }
@@ -29,7 +33,7 @@ export const getPatient: RequestHandler = async (req, res) => {
 export const createPatient: RequestHandler = async (req, res) => {
   try {
     const createdPatient = await PatientService.createPatient(req.body);
-    return res.status(201).json(createdPatient);
+    return res.status(201).json(exclude(createdPatient, ['password']));
   } catch (error: any) {
     return res.status(500).json(error.message);
   }
@@ -39,8 +43,8 @@ export const createPatient: RequestHandler = async (req, res) => {
 export const updatePatient: RequestHandler = async (req, res) => {
   const id = parseInt(req.params.id, 10);
   try {
-    const updatedUser = await PatientService.updatePatient(id, req.body);
-    return res.status(200).json(updatedUser);
+    const updatedPatient = await PatientService.updatePatient(id, req.body);
+    return res.status(200).json(exclude(updatedPatient, ['password']));
   } catch (error: any) {
     return res.status(500).json(error.message);
   }
@@ -50,8 +54,8 @@ export const updatePatient: RequestHandler = async (req, res) => {
 export const deletePatient: RequestHandler = async (req, res) => {
   const id = parseInt(req.params.id, 10);
   try {
-    const deletedUser = await PatientService.deletePatient(id);
-    return res.status(200).json(deletedUser);
+    const deletedPatient = await PatientService.deletePatient(id);
+    return res.status(200).json(exclude(deletedPatient, ['password']));
   } catch (error: any) {
     return res.status(500).json(error.message);
   }

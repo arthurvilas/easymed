@@ -1,4 +1,5 @@
 import { RequestHandler } from 'express';
+import { exclude } from '../utils/excludeFields';
 import * as DoctorService from './doctor.service';
 
 // List all doctors
@@ -6,7 +7,10 @@ export const listDoctors: RequestHandler = async (req, res) => {
   try {
     const specialtyId = parseInt(req.query.specialty as string, 10);
     const doctors = await DoctorService.listDoctors(specialtyId);
-    return res.status(200).json(doctors);
+    const doctorsWithoutPasswords = doctors.map((doctor) =>
+      exclude(doctor, ['password'])
+    );
+    return res.status(200).json(doctorsWithoutPasswords);
   } catch (error: any) {
     return res.status(500).json(error.message);
   }
@@ -17,7 +21,10 @@ export const getDoctor: RequestHandler = async (req, res) => {
   const id = parseInt(req.params.id, 10);
   try {
     const doctor = await DoctorService.getDoctor(id);
-    return res.status(200).json(doctor);
+    if (!doctor) {
+      return res.status(404).json(`No Doctor with id ${id}`);
+    }
+    return res.status(200).json(exclude(doctor, ['password']));
   } catch (error: any) {
     return res.status(500).json(error.message);
   }
@@ -27,7 +34,7 @@ export const getDoctor: RequestHandler = async (req, res) => {
 export const createDoctor: RequestHandler = async (req, res) => {
   try {
     const createdDoctor = await DoctorService.createDoctor(req.body);
-    return res.status(201).json(createdDoctor);
+    return res.status(201).json(exclude(createdDoctor, ['password']));
   } catch (error: any) {
     return res.status(500).json(error.message);
   }
@@ -38,7 +45,7 @@ export const updateDoctor: RequestHandler = async (req, res) => {
   const id = parseInt(req.params.id, 10);
   try {
     const updatedDoctor = await DoctorService.updateDoctor(id, req.body);
-    return res.status(200).json(updatedDoctor);
+    return res.status(200).json(exclude(updatedDoctor, ['password']));
   } catch (error: any) {
     return res.status(500).json(error.message);
   }
@@ -49,7 +56,7 @@ export const deleteDoctor: RequestHandler = async (req, res) => {
   const id = parseInt(req.params.id, 10);
   try {
     const deletedUser = await DoctorService.deleteDoctor(id);
-    return res.status(200).json(deletedUser);
+    return res.status(200).json(exclude(deletedUser, ['password']));
   } catch (error: any) {
     return res.status(500).json(error.message);
   }
