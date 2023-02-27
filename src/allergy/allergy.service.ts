@@ -6,7 +6,10 @@ export const listAllergies = async () => {
 };
 
 export const getPatientAllergies = async (patientId: number) => {
-  return db.patientAllergy.findMany({ where: { patientId } });
+  return db.patientAllergy.findMany({
+    where: { patientId },
+    include: { allergy: true },
+  });
 };
 
 export const createPatientAllergy = async (
