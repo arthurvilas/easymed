@@ -55,7 +55,6 @@ model Medicine {
 }
 
 model PatientMedicine {
-  id         Int       @id @default(autoincrement())
   patient    Patient   @relation(fields: [patientId], references: [id])
   patientId  Int
   medicine   Medicine  @relation(fields: [medicineId], references: [id])
@@ -66,6 +65,8 @@ model PatientMedicine {
   stoppedAt  DateTime?
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
+
+  @@id([patientId, medicineId])
 }
 
 model Condition {
