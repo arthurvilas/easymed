@@ -11,3 +11,15 @@ export const login: RequestHandler = async (req, res) => {
     return res.status(500).json(error.message);
   }
 };
+
+export const refresh: RequestHandler = async (req, res) => {
+  try {
+    const { token } = req.body;
+    if (!token) {
+      return res.status(400).json('Invalid token');
+    }
+    return AuthService.refresh(token);
+  } catch (error: any) {
+    res.status(401).json({ message: 'Invalid token' });
+  }
+};
