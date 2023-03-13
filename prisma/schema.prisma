@@ -77,6 +77,9 @@ model Condition {
   appointmentId Int
   name          String
   description   String
+  isInFamily    Boolean?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
 }
 
 model Doctor {
@@ -85,6 +88,7 @@ model Doctor {
   email          String        @unique
   password       String
   profilePicture String?
+  phone          String?
   specialty      Specialty     @relation(fields: [specialtyId], references: [id])
   specialtyId    Int
   description    String?
@@ -140,6 +144,7 @@ model Exam {
   appointmentId Int
   examType      String
   result        String?
+  file          String?
   location      String?
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
