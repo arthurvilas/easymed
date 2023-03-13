@@ -1,6 +1,7 @@
 import { RequestHandler } from 'express';
 import { exclude } from '../utils/excludeFields';
 import * as PatientService from './patient.service';
+import * as AuthService from '../auth/auth.service';
 
 // List all patients
 export const listPatients: RequestHandler = async (req, res) => {
@@ -33,7 +34,14 @@ export const getPatient: RequestHandler = async (req, res) => {
 export const createPatient: RequestHandler = async (req, res) => {
   try {
     const createdPatient = await PatientService.createPatient(req.body);
-    return res.status(201).json(exclude(createdPatient, ['password']));
+    const patientWithToken = await AuthService.login({
+      email: createdPatient.email,
+      password: createdPatient.password,
+    });
+    return res.status(201).json({
+      ...patientWithToken,
+      patient: exclude(patientWithToken.patient, ['password']),
+    });
   } catch (error: any) {
     return res.status(500).json(error.message);
   }
