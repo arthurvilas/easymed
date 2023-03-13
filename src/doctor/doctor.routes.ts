@@ -8,6 +8,8 @@ doctorRouter.get('/', DoctorController.listDoctors);
 
 doctorRouter.get('/:id', DoctorController.getDoctor);
 
+doctorRouter.get('/specialties', DoctorController.listSpecialties);
+
 doctorRouter.post('/', DoctorController.createDoctor);
 
 doctorRouter.patch('/:id', DoctorController.updateDoctor);

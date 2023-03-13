@@ -16,6 +16,16 @@ export const listDoctors: RequestHandler = async (req, res) => {
   }
 };
 
+// List all specialties
+export const listSpecialties: RequestHandler = async (req, res) => {
+  try {
+    const specialties = await DoctorService.listSpecialties();
+    return res.status(200).json(specialties);
+  } catch (error: any) {
+    return res.status(500).json(error.message);
+  }
+};
+
 // Find a single doctor
 export const getDoctor: RequestHandler = async (req, res) => {
   const id = parseInt(req.params.id, 10);

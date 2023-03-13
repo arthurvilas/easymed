@@ -9,6 +9,10 @@ export const listDoctors = async (specialty?: number) => {
   return db.doctor.findMany({ where: {} });
 };
 
+export const listSpecialties = async () => {
+  return db.specialty.findMany({});
+};
+
 export const getDoctor = async (id: number) => {
   return db.doctor.findUnique({ where: { id } });
 };
