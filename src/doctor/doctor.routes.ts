@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { doctorAppointmentRouter } from '../appointments/doctorAppointment.routes';
 import { ratingRouter } from '../rating/rating.routers';
 import * as DoctorController from './doctor.controller';
 
@@ -17,3 +18,5 @@ doctorRouter.patch('/:id', DoctorController.updateDoctor);
 doctorRouter.delete('/', DoctorController.deleteDoctor);
 
 doctorRouter.use('/:doctorId/ratings', ratingRouter);
+
+doctorRouter.use('/:doctorId/appointments', doctorAppointmentRouter);
