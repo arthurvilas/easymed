@@ -47,7 +47,7 @@ export const getDoctorFreeSlots: RequestHandler = async (req, res) => {
 
     const freeSlotsInInterval = await Promise.all(
       isoDatesBetween.map((date) =>
-        AppointmentService.getDoctorDateAppointments(doctorId, date)
+        AppointmentService.getDoctorFreeSlotsForDate(doctorId, date)
       )
     );
 
