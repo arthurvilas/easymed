@@ -43,7 +43,9 @@ export const getDoctorFreeSlots: RequestHandler = async (req, res) => {
       new Date(endDate as string)
     );
 
-    const isoDatesBetween = datesBetween.map((date) => date.toISOString());
+    const isoDatesBetween = datesBetween.map((date) =>
+      date.toISOString().slice(0, 10)
+    );
 
     const freeSlotsInInterval = await Promise.all(
       isoDatesBetween.map((date) =>
