@@ -18,7 +18,8 @@ export const refresh: RequestHandler = async (req, res) => {
     if (!token) {
       return res.status(400).json('Invalid token');
     }
-    return AuthService.refresh(token);
+    const refreshedToken = AuthService.refresh(token);
+    return res.status(200).json({ token: refreshedToken });
   } catch (error: any) {
     res.status(401).json({ message: 'Invalid token' });
   }
