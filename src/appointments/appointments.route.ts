@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { appointmentConditionRouter } from '../condition/appointmentCondition.routes';
 import { appointmentExamRouter } from '../exam/appointmentExam.routes';
 import * as AppointmentController from './appointment.controller';
 
@@ -17,3 +18,5 @@ appointmentRouter.delete(
 );
 
 appointmentRouter.use('/:appointmentId/exams', appointmentExamRouter);
+
+appointmentRouter.use('/:appointmentId/conditions', appointmentConditionRouter);

@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { patientAllergyRouter } from '../allergy/patientAllergy.routes';
 import { patientAppointmentRouter } from '../appointments/patientAppointment.routes';
+import { patientConditionRouter } from '../condition/patientCondition.routes';
 import { patientMedicineRouter } from '../medicine/patientMedicine.routes';
 import { ratingRouter } from '../rating/rating.routers';
 import * as PatientController from './patient.controller';
@@ -49,3 +50,5 @@ patientRouter.use(
   ['/:patientId/appointments', '/:patientId/doctors/:doctorId/appointments'],
   patientAppointmentRouter
 );
+
+patientRouter.use('/:patientId/conditions', patientConditionRouter);
