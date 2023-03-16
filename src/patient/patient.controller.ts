@@ -1,5 +1,6 @@
 import { RequestHandler } from 'express';
 import { exclude } from '../utils/excludeFields';
+import { validationResult } from 'express-validator';
 import * as PatientService from './patient.service';
 import * as AuthService from '../auth/auth.service';
 
@@ -18,8 +19,13 @@ export const listPatients: RequestHandler = async (req, res) => {
 
 // Find a single patient
 export const getPatient: RequestHandler = async (req, res) => {
-  const id = parseInt(req.params.id, 10);
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
   try {
+    const id = parseInt(req.params.patientId, 10);
     const patient = await PatientService.getPatient(id);
     if (!patient) {
       return res.status(404).json(`No Patient with id ${id}`);
@@ -32,6 +38,11 @@ export const getPatient: RequestHandler = async (req, res) => {
 
 // Create a patient
 export const createPatient: RequestHandler = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
   try {
     const createdPatient = await PatientService.createPatient(req.body);
     const patientWithToken = await AuthService.login({
@@ -49,8 +60,13 @@ export const createPatient: RequestHandler = async (req, res) => {
 
 // Update a patient
 export const updatePatient: RequestHandler = async (req, res) => {
-  const id = parseInt(req.params.id, 10);
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
   try {
+    const id = parseInt(req.params.patientId, 10);
     const updatedPatient = await PatientService.updatePatient(id, req.body);
     return res.status(200).json(exclude(updatedPatient, ['password']));
   } catch (error: any) {
@@ -60,8 +76,13 @@ export const updatePatient: RequestHandler = async (req, res) => {
 
 // Delete a patient
 export const deletePatient: RequestHandler = async (req, res) => {
-  const id = parseInt(req.params.id, 10);
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
   try {
+    const id = parseInt(req.params.patientId, 10);
     const deletedPatient = await PatientService.deletePatient(id);
     return res.status(200).json(exclude(deletedPatient, ['password']));
   } catch (error: any) {

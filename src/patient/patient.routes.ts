@@ -4,18 +4,40 @@ import { patientAppointmentRouter } from '../appointments/patientAppointment.rou
 import { patientMedicineRouter } from '../medicine/patientMedicine.routes';
 import { ratingRouter } from '../rating/rating.routers';
 import * as PatientController from './patient.controller';
+import {
+  createPatientValidator,
+  deletePatientValidator,
+  getPatientValidator,
+  updatePatientValidator,
+} from './patientValidators';
 
 export const patientRouter = Router();
 
 patientRouter.get('/', PatientController.listPatients);
 
-patientRouter.get('/:id', PatientController.getPatient);
+patientRouter.get(
+  '/:patientId',
+  getPatientValidator,
+  PatientController.getPatient
+);
 
-patientRouter.post('/', PatientController.createPatient);
+patientRouter.post(
+  '/',
+  createPatientValidator,
+  PatientController.createPatient
+);
 
-patientRouter.patch('/:id', PatientController.updatePatient);
+patientRouter.patch(
+  '/:patientId',
+  updatePatientValidator,
+  PatientController.updatePatient
+);
 
-patientRouter.delete('/:id', PatientController.deletePatient);
+patientRouter.delete(
+  '/:patientId',
+  deletePatientValidator,
+  PatientController.deletePatient
+);
 
 patientRouter.use('/:patientId/allergies', patientAllergyRouter);
 
