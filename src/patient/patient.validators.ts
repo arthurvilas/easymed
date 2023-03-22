@@ -8,6 +8,7 @@ export const createPatientValidator = [
   body('email').notEmpty().isEmail().normalizeEmail(),
   body('password').notEmpty().isString().isLength({ min: 4, max: 20 }),
   body('birthDate').optional().isISO8601().isLength({ min: 10, max: 10 }),
+  body('phone').optional().isString().isLength({ min: 8, max: 20 }),
   body('profilePicture').optional().isURL(),
   body('height').optional().isDecimal(),
   body('gender').optional().isString().isAlpha(),
