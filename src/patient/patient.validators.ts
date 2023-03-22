@@ -7,7 +7,7 @@ export const createPatientValidator = [
   body('cpf').notEmpty().isNumeric().isLength({ max: 11, min: 11 }),
   body('email').notEmpty().isEmail().normalizeEmail(),
   body('password').notEmpty().isString().isLength({ min: 4, max: 20 }),
-  body('birthDate').optional().isISO8601(),
+  body('birthDate').optional().isISO8601().isLength({ min: 10, max: 10 }),
   body('profilePicture').optional().isURL(),
   body('height').optional().isDecimal(),
   body('gender').optional().isString().isAlpha(),
@@ -23,7 +23,7 @@ export const updatePatientValidator = [
     .notEmpty()
     .isString()
     .isLength({ min: 4, max: 20 }),
-  body('birthDate').optional().isISO8601(),
+  body('birthDate').optional().isISO8601().isLength({ min: 10, max: 10 }),
   body('profilePicture').optional().isURL(),
   body('height').optional().isDecimal(),
   body('gender').optional().isString().isAlpha(),

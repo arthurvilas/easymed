@@ -10,7 +10,7 @@ import {
   deletePatientValidator,
   getPatientValidator,
   updatePatientValidator,
-} from './patientValidators';
+} from './patient.validators';
 
 export const patientRouter = Router();
 

@@ -28,8 +28,8 @@ export const listSpecialties: RequestHandler = async (req, res) => {
 
 // Find a single doctor
 export const getDoctor: RequestHandler = async (req, res) => {
-  const id = parseInt(req.params.id, 10);
   try {
+    const id = parseInt(req.params.doctorId, 10);
     const doctor = await DoctorService.getDoctor(id);
     if (!doctor) {
       return res.status(404).json(`No Doctor with id ${id}`);
@@ -52,8 +52,8 @@ export const createDoctor: RequestHandler = async (req, res) => {
 
 // Update a doctor
 export const updateDoctor: RequestHandler = async (req, res) => {
-  const id = parseInt(req.params.id, 10);
   try {
+    const id = parseInt(req.params.doctorId, 10);
     const updatedDoctor = await DoctorService.updateDoctor(id, req.body);
     return res.status(200).json(exclude(updatedDoctor, ['password']));
   } catch (error: any) {
@@ -63,8 +63,8 @@ export const updateDoctor: RequestHandler = async (req, res) => {
 
 // Delete a doctor
 export const deleteDoctor: RequestHandler = async (req, res) => {
-  const id = parseInt(req.params.id, 10);
   try {
+    const id = parseInt(req.params.doctorId, 10);
     const deletedUser = await DoctorService.deleteDoctor(id);
     return res.status(200).json(exclude(deletedUser, ['password']));
   } catch (error: any) {
