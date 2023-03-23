@@ -13,29 +13,36 @@ interface JwtRefreshPayload extends JwtPayload {
   email: string;
 }
 
-export const login = async (patientData: LoginDTO) => {
-  const foundPatient = await db.patient.findUnique({
-    where: { email: patientData.email },
-  });
-  if (!foundPatient) {
-    throw new Error('No patient with email ' + patientData.email);
+export const login = async (userData: LoginDTO) => {
+  const [patient, doctor] = await Promise.all([
+    db.patient.findUnique({
+      where: { email: userData.email },
+    }),
+    db.doctor.findUnique({
+      where: { email: userData.email },
+    }),
+  ]);
+
+  const foundUser = patient ? patient : doctor;
+
+  if (!foundUser) {
+    throw new Error('No user with email ' + userData.email);
   }
 
-  const passwordMatch = await compare(
-    patientData.password,
-    foundPatient.password
-  );
+  const role = patient ? 'patient' : 'doctor';
+
+  const passwordMatch = await compare(userData.password, foundUser.password);
   if (!passwordMatch) {
     throw new Error('Invalid password');
   }
 
   const token = jwt.sign(
-    { id: foundPatient.id, name: foundPatient.name, email: foundPatient.email },
+    { id: foundUser.id, name: foundUser.name, email: foundUser.email, role },
     process.env.JWT_SECRET as string,
     { expiresIn: '2 days' }
   );
 
-  return { patient: foundPatient, token };
+  return { role, user: foundUser, token };
 };
 
 export const refresh = (token: string) => {
