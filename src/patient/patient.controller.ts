@@ -2,7 +2,7 @@ import { RequestHandler } from 'express';
 import { exclude } from '../utils/excludeFields';
 import { validationResult } from 'express-validator';
 import * as PatientService from './patient.service';
-import * as AuthService from '../auth/auth.service';
+import jwt from 'jsonwebtoken';
 
 // List all patients
 export const listPatients: RequestHandler = async (req, res) => {
@@ -45,15 +45,21 @@ export const createPatient: RequestHandler = async (req, res) => {
 
   try {
     const createdPatient = await PatientService.createPatient(req.body);
-    const patientWithToken = await AuthService.login({
-      email: createdPatient.email,
-      password: createdPatient.password,
-    });
-    return res.status(201).json({
-      ...patientWithToken,
-      patient: exclude(patientWithToken.patient, ['password']),
-    });
+    const token = jwt.sign(
+      {
+        id: createdPatient.id,
+        name: createdPatient.name,
+        email: createdPatient.email,
+        role: 'patient',
+      },
+      process.env.JWT_SECRET as string,
+      { expiresIn: '2 days' }
+    );
+    return res
+      .status(201)
+      .json({ patient: exclude(createdPatient, ['password']), token });
   } catch (error: any) {
+    console.log(error);
     return res.status(500).json(error.message);
   }
 };
