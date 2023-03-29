@@ -9,6 +9,8 @@ doctorRouter.get('/', DoctorController.listDoctors);
 
 doctorRouter.get('/specialties', DoctorController.listSpecialties);
 
+doctorRouter.post('/specialties', DoctorController.createSpecialty);
+
 doctorRouter.get('/:doctorId', DoctorController.getDoctor);
 
 doctorRouter.post('/', DoctorController.createDoctor);

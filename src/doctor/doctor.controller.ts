@@ -26,6 +26,16 @@ export const listSpecialties: RequestHandler = async (req, res) => {
   }
 };
 
+export const createSpecialty: RequestHandler = async (req, res) => {
+  try {
+    const createdSpecialty = await DoctorService.createSpecialty(req.body);
+    return res.status(201).json(createdSpecialty);
+  } catch (error: any) {
+    console.log(error);
+    return res.status(500).json(error.message);
+  }
+};
+
 // Find a single doctor
 export const getDoctor: RequestHandler = async (req, res) => {
   try {

@@ -13,6 +13,12 @@ export const listSpecialties = async () => {
   return db.specialty.findMany({});
 };
 
+export const createSpecialty = async (
+  specialtyData: Prisma.SpecialtyCreateInput
+) => {
+  return db.specialty.create({ data: specialtyData });
+};
+
 export const getDoctor = async (id: number) => {
   return db.doctor.findUnique({ where: { id } });
 };
