@@ -1,5 +1,6 @@
 import { RequestHandler } from 'express';
 import { exclude } from '../utils/excludeFields';
+import jwt from 'jsonwebtoken';
 import * as DoctorService from './doctor.service';
 
 // List all doctors
@@ -54,8 +55,21 @@ export const getDoctor: RequestHandler = async (req, res) => {
 export const createDoctor: RequestHandler = async (req, res) => {
   try {
     const createdDoctor = await DoctorService.createDoctor(req.body);
-    return res.status(201).json(exclude(createdDoctor, ['password']));
+    const token = jwt.sign(
+      {
+        id: createdDoctor.id,
+        name: createdDoctor.name,
+        email: createdDoctor.email,
+        role: 'doctor',
+      },
+      process.env.JWT_SECRET as string,
+      { expiresIn: '2 days' }
+    );
+    return res
+      .status(201)
+      .json({ doctor: exclude(createdDoctor, ['password']), token });
   } catch (error: any) {
+    console.log(error);
     return res.status(500).json(error.message);
   }
 };
