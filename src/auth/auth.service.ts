@@ -11,6 +11,7 @@ interface JwtRefreshPayload extends JwtPayload {
   id: number;
   name: string;
   email: string;
+  role: string;
 }
 
 export const login = async (userData: LoginDTO) => {
@@ -56,9 +57,10 @@ export const refresh = (token: string) => {
       id: payload.id,
       name: payload.name,
       email: payload.email,
+      role: payload.role,
     },
     process.env.JWT_SECRET as string,
     { expiresIn: '2 days' }
   );
-  return newToken;
+  return { refreshedToken: newToken, payload };
 };

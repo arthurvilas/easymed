@@ -1,4 +1,7 @@
+import { Doctor, Patient } from '@prisma/client';
 import { RequestHandler } from 'express';
+import { getDoctor } from '../doctor/doctor.service';
+import { getPatient } from '../patient/patient.service';
 
 import * as AuthService from './auth.service';
 
@@ -18,8 +21,24 @@ export const refresh: RequestHandler = async (req, res) => {
     if (!token) {
       return res.status(400).json('Invalid token');
     }
-    const refreshedToken = AuthService.refresh(token);
-    return res.status(200).json({ token: refreshedToken });
+
+    const { refreshedToken, payload } = AuthService.refresh(token);
+
+    let user: Patient | Doctor | null = null;
+
+    if (payload.role === 'patient') {
+      user = await getPatient(payload.id);
+    } else if (payload.role === 'doctor') {
+      user = await getDoctor(payload.id);
+    }
+
+    if (!user) {
+      return res.status(400).json('Invalid token');
+    }
+
+    return res
+      .status(200)
+      .json({ token: refreshedToken, role: payload.role, user });
   } catch (error: any) {
     res.status(401).json({ message: 'Invalid token' });
   }
