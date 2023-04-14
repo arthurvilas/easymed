@@ -10,7 +10,10 @@ export const getAppointment = async (appointmentId: number) => {
 };
 
 export const getPatientAppointments = async (patientId: number) => {
-  return db.appointment.findMany({ where: { patientId: patientId } });
+  return db.appointment.findMany({
+    where: { patientId: patientId },
+    include: { doctor: { select: { name: true } } },
+  });
 };
 
 export const getDoctorFreeSlotsForDate = async (
