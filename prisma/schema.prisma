@@ -16,6 +16,7 @@ model Patient {
   cpf             String
   email           String            @unique
   password        String
+  phone           String?
   birthDate       DateTime?
   profilePicture  String?
   height          Decimal?
@@ -25,7 +26,6 @@ model Patient {
   updatedAt       DateTime?         @updatedAt
   PatientAllergy  PatientAllergy[]
   PatientMedicine PatientMedicine[]
-  Condition       Condition[]
   Rating          Rating[]
   Appointment     Appointment[]
 }
@@ -55,37 +55,43 @@ model Medicine {
 }
 
 model PatientMedicine {
-  id         Int       @id @default(autoincrement())
   patient    Patient   @relation(fields: [patientId], references: [id])
   patientId  Int
   medicine   Medicine  @relation(fields: [medicineId], references: [id])
   medicineId Int
-  frequency  String
+  frequency  String?
   isActive   Boolean   @default(false)
   startedAt  DateTime?
   stoppedAt  DateTime?
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
+
+  @@id([patientId, medicineId])
 }
 
 model Condition {
-  id          Int     @id @default(autoincrement())
-  name        String
-  description String
-  patient     Patient @relation(fields: [patientId], references: [id])
-  patientId   Int
+  id            Int         @id @default(autoincrement())
+  appointment   Appointment @relation(fields: [appointmentId], references: [id])
+  appointmentId Int
+  name          String
+  description   String
+  isInFamily    Boolean?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
 }
 
 model Doctor {
   id             Int           @id @default(autoincrement())
   name           String
   email          String        @unique
+  cpf            String
   password       String
-  profilePicture String
+  profilePicture String?
+  phone          String?
   specialty      Specialty     @relation(fields: [specialtyId], references: [id])
   specialtyId    Int
-  description    String
-  insurance      Insurance
+  description    String?
+  insurance      Insurance?
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
   Appointment    Appointment[]
@@ -117,17 +123,18 @@ model Rating {
 }
 
 model Appointment {
-  id        Int       @id @default(autoincrement())
-  patient   Patient   @relation(fields: [patientId], references: [id])
+  id        Int         @id @default(autoincrement())
+  patient   Patient     @relation(fields: [patientId], references: [id])
   patientId Int
-  doctor    Doctor    @relation(fields: [doctorId], references: [id])
+  doctor    Doctor      @relation(fields: [doctorId], references: [id])
   doctorId  Int
-  date      DateTime  @db.Date
+  date      DateTime    @db.Date
   time      TimeSlots
-  location  String
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  location  String?
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
   Exam      Exam[]
+  Condition Condition[]
 }
 
 model Exam {
@@ -135,8 +142,9 @@ model Exam {
   appointment   Appointment @relation(fields: [appointmentId], references: [id])
   appointmentId Int
   examType      String
-  result        String
-  location      String
+  result        String?
+  file          String?
+  location      String?
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
 }
