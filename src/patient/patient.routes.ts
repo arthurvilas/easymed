@@ -3,7 +3,7 @@ import { patientAllergyRouter } from '../allergy/patientAllergy.routes';
 import { patientAppointmentRouter } from '../appointments/patientAppointment.routes';
 import { patientConditionRouter } from '../condition/patientCondition.routes';
 import { patientMedicineRouter } from '../medicine/patientMedicine.routes';
-import { ratingRouter } from '../rating/rating.routers';
+import { patientRatingRouter } from '../rating/patientRating.routers';
 import * as PatientController from './patient.controller';
 import {
   createPatientValidator,
@@ -44,7 +44,7 @@ patientRouter.use('/:patientId/allergies', patientAllergyRouter);
 
 patientRouter.use('/:patientId/medicines', patientMedicineRouter);
 
-patientRouter.use('/:patientId/doctors/:doctorId/ratings', ratingRouter);
+patientRouter.use('/:patientId/doctors/:doctorId/ratings', patientRatingRouter);
 
 patientRouter.use(
   ['/:patientId/appointments', '/:patientId/doctors/:doctorId/appointments'],
