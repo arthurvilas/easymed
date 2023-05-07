@@ -1,8 +1,59 @@
 import { RequestHandler } from 'express';
 import * as RatingService from './rating.service';
+import { validationResult } from 'express-validator';
+
+// Get a specific rating
+export const getRating: RequestHandler = async (req, res) => {
+  const errors = validationResult(req);
+  console.log(errors);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  try {
+    const patientId = parseInt(req.params.patientId, 10);
+    const doctorId = parseInt(req.params.doctorId, 10);
+    const rating = await RatingService.getRating(patientId, doctorId);
+    if (!rating) {
+      return res.status(404).json('Rating not found');
+    }
+    return res.status(200).json(rating);
+  } catch (error: any) {
+    return res.status(500).json(error.message);
+  }
+};
+
+// Update a rating
+export const updateRating: RequestHandler = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  try {
+    const patientId = parseInt(req.params.patientId, 10);
+    const doctorId = parseInt(req.params.doctorId, 10);
+    const { rating } = req.body;
+    const updatedRating = await RatingService.updateRating(
+      patientId,
+      doctorId,
+      {
+        rating,
+      }
+    );
+    return res.status(200).json(updatedRating);
+  } catch (error: any) {
+    return res.status(500).json(error.message);
+  }
+};
 
 // Get ratings for a doctor
 export const getDoctorRatings: RequestHandler = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
   try {
     const doctorId = parseInt(req.params.doctorId, 10);
     const doctorRatings = await RatingService.getDoctorRatings(doctorId);
@@ -15,6 +66,11 @@ export const getDoctorRatings: RequestHandler = async (req, res) => {
 
 // Create rating for a doctor
 export const createRating: RequestHandler = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
   try {
     const patientId = parseInt(req.params.patientId, 10);
     const doctorId = parseInt(req.params.doctorId, 10);

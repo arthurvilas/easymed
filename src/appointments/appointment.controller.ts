@@ -25,7 +25,16 @@ export const getPatientAppointments: RequestHandler = async (req, res) => {
     const appointments = await AppointmentService.getPatientAppointments(
       patientId
     );
-    return res.status(200).json(appointments);
+
+    const formattedAppointments = appointments.map((appointment) => {
+      let formattedAppointment: any = {};
+      delete Object.assign(formattedAppointment, appointment, {
+        ['exams']: appointment['Exam'],
+      })['Exam'];
+      return formattedAppointment;
+    });
+
+    return res.status(200).json(formattedAppointments);
   } catch (error: any) {
     console.log(error);
     return res.status(500).json(error.message);

@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { doctorAppointmentRouter } from '../appointments/doctorAppointment.routes';
-import { ratingRouter } from '../rating/rating.routers';
+import { doctorRatingRouter } from '../rating/doctorRating.routes';
 import * as DoctorController from './doctor.controller';
 
 export const doctorRouter = Router();
@@ -19,6 +19,6 @@ doctorRouter.patch('/:doctorId', DoctorController.updateDoctor);
 
 doctorRouter.delete('/:doctorId', DoctorController.deleteDoctor);
 
-doctorRouter.use('/:doctorId/ratings', ratingRouter);
+doctorRouter.use('/:doctorId/ratings', doctorRatingRouter);
 
 doctorRouter.use('/:doctorId/appointments', doctorAppointmentRouter);
