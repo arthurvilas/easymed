@@ -1,10 +1,23 @@
 import { Router } from 'express';
 import * as RatingController from './rating.controller';
+import {
+  createRatingValidator,
+  getRatingValidator,
+  updateRatingValidator,
+} from './rating.validators';
 
 export const patientRatingRouter = Router({ mergeParams: true });
 
-patientRatingRouter.get('/', RatingController.getRating);
+patientRatingRouter.get('/', getRatingValidator, RatingController.getRating);
 
-patientRatingRouter.post('/', RatingController.createRating);
+patientRatingRouter.post(
+  '/',
+  createRatingValidator,
+  RatingController.createRating
+);
 
-patientRatingRouter.patch('/', RatingController.updateRating);
+patientRatingRouter.patch(
+  '/',
+  updateRatingValidator,
+  RatingController.updateRating
+);
