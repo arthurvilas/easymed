@@ -1,17 +1,11 @@
 import { compare } from 'bcrypt';
 import { db } from '../utils/db.server';
-import jwt, { JwtPayload } from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
+import { JwtRefreshPayload } from '../types/jwtRefreshPayload';
 
 interface LoginDTO {
   email: string;
   password: string;
-}
-
-interface JwtRefreshPayload extends JwtPayload {
-  id: number;
-  name: string;
-  email: string;
-  role: string;
 }
 
 export const login = async (userData: LoginDTO) => {
