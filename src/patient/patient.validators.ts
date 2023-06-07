@@ -1,8 +1,8 @@
-import { body, param } from 'express-validator';
+import { body, checkExact, param } from 'express-validator';
 
-export const getPatientValidator = [param('patientId').isNumeric()];
+export const getPatientValidator = checkExact([param('patientId').isNumeric()]);
 
-export const createPatientValidator = [
+export const createPatientValidator = checkExact([
   body('name').notEmpty().trim().isLength({ max: 50 }),
   body('cpf').notEmpty().isNumeric().isLength({ max: 11, min: 11 }),
   body('email').notEmpty().isEmail().normalizeEmail(),
@@ -12,9 +12,9 @@ export const createPatientValidator = [
   body('profilePicture').optional().isURL(),
   body('height').optional().isDecimal(),
   body('gender').optional().isString().isAlpha(),
-];
+]);
 
-export const updatePatientValidator = [
+export const updatePatientValidator = checkExact([
   param('patientId').isNumeric(),
   body('name').optional().notEmpty().trim().isLength({ max: 50 }),
   body('cpf').optional().notEmpty().isNumeric().isLength({ max: 11, min: 11 }),
@@ -28,6 +28,6 @@ export const updatePatientValidator = [
   body('profilePicture').optional().isURL(),
   body('height').optional().isDecimal(),
   body('gender').optional().isString().isAlpha(),
-];
+]);
 
-export const deletePatientValidator = [param('patientId').isNumeric()];
+export const deletePatientValidator = checkExact([param('patientId').isNumeric()]);
